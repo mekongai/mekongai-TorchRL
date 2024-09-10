@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Cờ Caro - Người vs Máy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1 style="text-align: center;">Game Cờ Caro - Người vs Máy</h1>
+    <table id="board">
+        <tr>
+            <td onclick="playerMove(0,0)"></td>
+            <td onclick="playerMove(0,1)"></td>
+            <td onclick="playerMove(0,2)"></td>
+        </tr>
+        <tr>
+            <td onclick="playerMove(1,0)"></td>
+            <td onclick="playerMove(1,1)"></td>
+            <td onclick="playerMove(1,2)"></td>
+        </tr>
+        <tr>
+            <td onclick="playerMove(2,0)"></td>
+            <td onclick="playerMove(2,1)"></td>
+            <td onclick="playerMove(2,2)"></td>
+        </tr>
+    </table>
+
+    <script>
+        function playerMove(row, col) {
+            fetch(`/move?row=${row}&col=${col}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateBoard(data.board);
+                    if (data.winner) {
+                        alert(data.winner + " thắng!");
+                        setTimeout(() => location.reload(), 1000); // Tải lại trang sau 1 giây
+                    }
+                });
+        }
+
+        function updateBoard(board) {
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    document.getElementById("board").rows[i].cells[j].innerText = board[i][j] === 1 ? "X" : board[i][j] === -1 ? "O" : "";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
